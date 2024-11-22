@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silk Road Servers</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 600px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #444;
+        }
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .warning {
+            background-color: #ffe6e6;
+            border: 1px solid #ffcccb;
+        }
+        .success {
+            background-color: #e6ffe6;
+            border: 1px solid #ccffcc;
+        }
+        .hidden {
+            display: none;
+        }
+        #product-selection, #order-summary {
+            margin-top: 20px;
+        }
+        button, input[type="submit"] {
+            padding: 10px 15px;
+            margin-top: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+        }
+        button:hover, input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        input[type="text"], input[type="password"] {
+            padding: 10px;
+            width: calc(100% - 22px);
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Silk Road Servers</h1>
+    <div class="message">
+        <strong>Hello User</strong>
+    </div>
+    <div class="message warning">
+        <strong>Warning: This is just a game. Don't take it seriously!</strong>
+    </div>
+
+    <!-- User Input Form -->
+    <form id="user-form">
+        <label for="username">Enter your name: </label>
+        <input type="text" id="username" required><br><br>
+        <label for="password">Enter your password: </label>
+        <input type="password" id="password" required><br><br>
+        <input type="submit" value="Login">
+    </form>
+
+    <div id="result" class="message hidden"></div>
+    <div id="product-selection" class="hidden">
+        <div id="access-message"></div>
+        <label for="productType">Enter the type of product you need: </label>
+        <input type="text" id="productType" required>
+        <button id="select-product">Select Product</button>
+    </div>
+
+    <div id="order-summary" class="message hidden"></div>
+
+    <script>
+        // Mock data for users
+        const users = {
+            "rajkamal": "",
+            "ronit": "123456789",
+            "ayush": "987654321",
+            "akshat": "112233449",
+            "ariyan": "gugugagababy55"
+        };
+
+        // Login process
+        document.getElementById("user-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const username = document.getElementById("username").value.trim().toLowerCase();
+            const password = document.getElementById("password").value;
+
+            const resultDiv = document.getElementById("result");
+            const productSelectionDiv = document.getElementById("product-selection");
+            const accessMessageDiv = document.getElementById("access-message");
+
+            // Reset existing messages
+            resultDiv.className = "message hidden";
+            productSelectionDiv.classList.add("hidden");
+
+            if (username === "rajkamal") {
+                resultDiv.innerHTML = "Banned user detected! You cannot access the Silk Road.";
+                resultDiv.className = "message warning";
+            } else if (users[username] && users[username] === password) {
+                resultDiv.innerHTML = "";
+                accessMessageDiv.innerHTML = `You can access the Silk Road now. Welcome back, ${username}!`;
+                productSelectionDiv.classList.remove("hidden");
+            } else {
+                resultDiv.innerHTML = "Invalid username or password. Access denied.";
+                resultDiv.className = "message warning";
+            }
+
+            resultDiv.classList.remove("hidden");
+        });
+
+        // Product selection
+        document.getElementById("select-product").addEventListener("click", function() {
+            const productType = document.getElementById("productType").value.toLowerCase();
+            const orderSummaryDiv = document.getElementById("order-summary");
+
+            orderSummaryDiv.innerHTML = ""; // Clear previous summary
+
+            // Handle body parts and armory product selection
+            if (productType === "body parts") {
+                const selectedProduct = prompt("Select a product: liver, kidney, brain, DNA sample, heart, private parts, limbs").toLowerCase();
+                handleBodyPartsOrder(selectedProduct);
+            } else if (productType === "armory") {
+                const selectedArmoryProduct = prompt("Select an armory product: armors, guns, armoured vehicles, bombs").toLowerCase();
+                handleArmoryOrder(selectedArmoryProduct);
+            } else {
+                orderSummaryDiv.innerHTML = "Invalid product category. Please enter 'body parts' or 'armory'.";
+            }
+
+            orderSummaryDiv.classList.remove("hidden");
+            document.getElementById("productType").value = ''; // Reset input
+        });
+
+        // Handle Body Parts Order
+        function handleBodyPartsOrder(product) {
+            const products = {
+                liver: { price: 1.02, quantity: 1, description: "Liver" },
+                kidney: { price: 1.43, quantity: 2, description: "Kidney" },
+                brain: { price: 2.34, quantity: 1, description: "Brain" },
+                "dna sample": { price: 2.45, quantity: 1, description: "DNA Sample", identity: "rajkamal" },
+                heart: { price: 3.043, quantity: 1, description: "Heart" },
+                "private parts": { price: 0.97, quantity: 1, description: "Private Parts", sex: "Male" },
+                limbs: { price: 0.67, quantity: 2, description: "Limbs", type: "Hands" },
+            };
+
+            const selectedProduct = products[product];
+            const orderSummaryDiv = document.getElementById("order-summary");
+            let orderSummary = "";
+
+            if (selectedProduct) {
+                const confirmation = confirm(`Confirm your order for ${selectedProduct.quantity} ${selectedProduct.description} (${selectedProduct.price} bitcoin)?`);
+                if (confirmation) {
+                    orderSummary = `
+                        *** Order confirmed ***
+                        <br>Product: ${selectedProduct.description}
+                        <br>Quantity: ${selectedProduct.quantity}
+                        <br>Price: ${selectedProduct.price} bitcoin
+                    `;
+                    if (selectedProduct.identity) orderSummary += `<br>Identity: ${selectedProduct.identity}`;
+                    if (selectedProduct.sex) orderSummary += `<br>Sex: ${selectedProduct.sex}`;
+                    if (selectedProduct.type) orderSummary += `<br>Type of limb: ${selectedProduct.type}`;
+                    orderSummary += "<br>Thanks for your purchase";
+                } else {
+                    orderSummary = "Order cancelled.";
+                }
+            } else {
+                orderSummary = "This product is out of stock. Please choose another product.";
+            }
+
+            orderSummaryDiv.innerHTML = orderSummary;
+        }
+
+      // Inside the handleBodyPartsOrder function
+function handleBodyPartsOrder(product) {
+    const products = {
+        liver: { price: 1.02, quantity: 1, description: "Liver" },
+        kidney: { price: 1.43, quantity: 2, description: "Kidney" },
+        brain: { price: 2.34, quantity: 1, description: "Brain" },
+        "dna sample": { price: 2.45, quantity: 1, description: "DNA Sample", identity: "rajkamal" },
+        heart: { price: 3.043, quantity: 1, description: "Heart" },
+        "private parts": { price: 0.97, quantity: 1, description: "Private Parts", sex: "Male" },
+        limbs: { price: 0.67, quantity: 2, description: "Limbs", type: "Hands" },
+    };
+    
+    const selectedProduct = products[product];
+    
+    if (selectedProduct) {
+        const confirmation = confirm(`Confirm your order for ${selectedProduct.quantity} ${selectedProduct.description} (${selectedProduct.price} bitcoin)?`);
+        if (confirmation) {
+            // Redirect to the confirmation page with query parameters
+            window.location.href = `confirmation.html?product=${encodeURIComponent(selectedProduct.description)}&quantity=${selectedProduct.quantity}&price=${selectedProduct.price}`;
+        }
+    } else {
+        alert("This product is out of stock. Please choose another product.");
+    }
+}
+
+// Inside handleArmoryOrder function
+function handleArmoryOrder(product) {
+    const armoryProducts = {
+        armors: { price: 2, quantity: 20, description: "Armors" },
+        guns: { price: 2.32, quantity: 16, description: "Guns" },
+        "armoured vehicles": { price: 4, quantity: 5, description: "Armoured Vehicles" },
+        bombs: { price: 1.8, quantity: 6, description: "Bombs" },
+    };
+
+    const selectedArmoryProduct = armoryProducts[product];
+
+    if (selectedArmoryProduct) {
+        const confirmation = confirm(`Confirm your order for ${selectedArmoryProduct.quantity} ${selectedArmoryProduct.description} (${selectedArmoryProduct.price} bitcoin)?`);
+        if (confirmation) {
+            // Redirect to the confirmation page with query parameters
+            window.location.href = `confirmation.html?product=${encodeURIComponent(selectedArmoryProduct.description)}&quantity=${selectedArmoryProduct.quantity}&price=${selectedArmoryProduct.price}`;
+        }
+    } else {
+        alert("This armory product is out of stock. Please choose another product.");
+    }
+}
+    </script>
+</body>
+</html>
